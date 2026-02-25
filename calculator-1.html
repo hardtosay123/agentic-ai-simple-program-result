@@ -1,0 +1,279 @@
+<!doctype html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Simple Calculator</title>
+        <style>
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+
+            body {
+                font-family: Arial, sans-serif;
+                background-color: #f0f0f0;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                min-height: 100vh;
+            }
+
+            .calculator {
+                background-color: #333;
+                border-radius: 10px;
+                padding: 20px;
+                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+                width: 300px;
+            }
+
+            .display {
+                margin-bottom: 15px;
+            }
+
+            #result {
+                width: 100%;
+                height: 60px;
+                font-size: 2rem;
+                text-align: right;
+                padding: 0 15px;
+                border: none;
+                background-color: #222;
+                color: white;
+                border-radius: 5px;
+            }
+
+            .buttons {
+                display: grid;
+                grid-template-columns: repeat(4, 1fr);
+                gap: 10px;
+            }
+
+            button {
+                height: 60px;
+                border: none;
+                border-radius: 5px;
+                font-size: 1.2rem;
+                cursor: pointer;
+                transition: background-color 0.2s;
+            }
+
+            .number,
+            .decimal {
+                background-color: #666;
+                color: white;
+            }
+
+            .number:hover,
+            .decimal:hover {
+                background-color: #777;
+            }
+
+            .operator {
+                background-color: #ff9500;
+                color: white;
+            }
+
+            .operator:hover {
+                background-color: #ffaa33;
+            }
+
+            .equals {
+                background-color: #ff9500;
+                color: white;
+                grid-row: span 2;
+            }
+
+            .equals:hover {
+                background-color: #ffaa33;
+            }
+
+            .clear {
+                background-color: #a5a5a5;
+                color: black;
+            }
+
+            .clear:hover {
+                background-color: #d4d4d2;
+            }
+
+            .zero {
+                grid-column: span 2;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div class="calculator">
+            <div class="display">
+                <input type="text" id="result" readonly />
+            </div>
+            <div class="buttons">
+                <button class="clear">C</button>
+                <button class="operator" data-op="/">/</button>
+                <button class="operator" data-op="*">*</button>
+                <button class="operator" data-op="-">-</button>
+
+                <button class="number" data-num="7">7</button>
+                <button class="number" data-num="8">8</button>
+                <button class="number" data-num="9">9</button>
+                <button class="operator" data-op="+">+</button>
+
+                <button class="number" data-num="4">4</button>
+                <button class="number" data-num="5">5</button>
+                <button class="number" data-num="6">6</button>
+                <button class="equals">=</button>
+
+                <button class="number" data-num="1">1</button>
+                <button class="number" data-num="2">2</button>
+                <button class="number" data-num="3">3</button>
+                <button class="number" data-num="0">0</button>
+
+                <button class="decimal">.</button>
+            </div>
+        </div>
+        <script>
+            // Initialize Variables
+            let currentInput = "";
+            let previousInput = "";
+            let operation = null;
+            let shouldResetScreen = false;
+
+            // DOM Element Selection
+            const resultDisplay = document.getElementById("result");
+            const numberButtons = document.querySelectorAll(".number");
+            const operatorButtons = document.querySelectorAll(".operator");
+            const equalsButton = document.querySelector(".equals");
+            const clearButton = document.querySelector(".clear");
+            const decimalButton = document.querySelector(".decimal");
+
+            // Event Listeners Registration
+            // Number buttons
+            numberButtons.forEach((button) => {
+                button.addEventListener("click", () => {
+                    appendNumber(button.dataset.num);
+                });
+            });
+
+            // Operator buttons
+            operatorButtons.forEach((button) => {
+                button.addEventListener("click", () => {
+                    chooseOperation(button.dataset.op);
+                });
+            });
+
+            // Equals button
+            equalsButton.addEventListener("click", compute);
+
+            // Clear button
+            clearButton.addEventListener("click", clear);
+
+            // Decimal button
+            decimalButton.addEventListener("click", appendDecimal);
+
+            // Core Functions Implementation
+            function appendNumber(number) {
+                if (shouldResetScreen) {
+                    resultDisplay.value = "";
+                    shouldResetScreen = false;
+                }
+
+                // Prevent multiple leading zeros
+                if (resultDisplay.value === "0" && number === "0") return;
+
+                resultDisplay.value += number;
+            }
+
+            function appendDecimal() {
+                if (shouldResetScreen) {
+                    resultDisplay.value = "0.";
+                    shouldResetScreen = false;
+                    return;
+                }
+
+                if (resultDisplay.value === "") {
+                    resultDisplay.value = "0.";
+                    return;
+                }
+
+                if (!resultDisplay.value.includes(".")) {
+                    resultDisplay.value += ".";
+                }
+            }
+
+            function chooseOperation(op) {
+                if (resultDisplay.value === "") return;
+
+                if (operation !== null) {
+                    compute();
+                }
+
+                operation = op;
+                previousInput = resultDisplay.value;
+                shouldResetScreen = true;
+            }
+
+            function compute() {
+                if (operation === null || previousInput === "") return;
+
+                const prev = parseFloat(previousInput);
+                const current = parseFloat(resultDisplay.value);
+
+                if (isNaN(prev) || isNaN(current)) return;
+
+                let computation;
+                switch (operation) {
+                    case "+":
+                        computation = prev + current;
+                        break;
+                    case "-":
+                        computation = prev - current;
+                        break;
+                    case "*":
+                        computation = prev * current;
+                        break;
+                    case "/":
+                        if (current === 0) {
+                            alert("Cannot divide by zero!");
+                            clear();
+                            return;
+                        }
+                        computation = prev / current;
+                        break;
+                    default:
+                        return;
+                }
+
+                resultDisplay.value = computation;
+                operation = null;
+                previousInput = "";
+                shouldResetScreen = true;
+            }
+
+            function clear() {
+                resultDisplay.value = "";
+                previousInput = "";
+                operation = null;
+            }
+
+            // Keyboard support
+            document.addEventListener("keydown", (event) => {
+                if (/[0-9]/.test(event.key)) {
+                    appendNumber(event.key);
+                } else if (event.key === ".") {
+                    appendDecimal();
+                } else if (event.key === "=" || event.key === "Enter") {
+                    event.preventDefault();
+                    compute();
+                } else if (event.key === "Escape") {
+                    clear();
+                } else if (["+", "-", "*", "/"].includes(event.key)) {
+                    chooseOperation(event.key);
+                }
+            });
+        </script>
+    </body>
+
+</html>
