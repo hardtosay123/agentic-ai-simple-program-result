@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Flappy Bird</title>
+    <style>
+      body {
+        margin: 0;
+        background: #000;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+      }
+      canvas {
+        background: #71c5ee;
+        border: 4px solid #000;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="c" width="288" height="512"></canvas>
+    <script>
+      const c = document.getElementById("c"),
+        ctx = c.getContext("2d");
+      let birdY = 250,
+        birdV = 0,
+        gravity = 0.5,
+        flap = -10,
+        score = 0,
+        gameOver = false,
+        pipes = [],
+        frame = 0;
+      function addPipe() {
+        const gap = 150,
+          h = Math.floor(Math.random() * 180) + 100;
+        pipes.push({ x: c.width, top: h, bot: c.height - h - gap });
+      }
+      function draw() {
+        ctx.clearRect(0, 0, c.width, c.height);
+        ctx.fillStyle = "#5cb85c";
+        for (let p of pipes) {
+          ctx.fillRect(p.x, 0, 52, p.top);
+          ctx.fillRect(p.x, c.height - p.bot, 52, p.bot);
+        }
+        ctx.fillStyle = "#f7d51d";
+        ctx.fillRect(60, birdY, 34, 24);
+        ctx.fillStyle = "#000";
+        ctx.fillRect(80, birdY + 8, 6, 6);
+        ctx.fillStyle = "#ded895";
+        ctx.fillRect(0, c.height - 50, c.width, 50);
+        ctx.fillStyle = "#000";
+        ctx.font = "20px Arial";
+        ctx.fillText("Score: " + score, 10, 30);
+        if (gameOver) {
+          ctx.fillText("GAME OVER", 70, 220);
+          ctx.fillText("Click/Space restart", 40, 260);
+        } else ctx.fillText("Click or Space", 60, 480);
+      }
+      function update() {
+        if (gameOver) return;
+        birdV += gravity;
+        birdY += birdV;
+        if (birdY > c.height - 80 || birdY < 0) gameOver = true;
+        frame++;
+        if (frame % 85 == 0) addPipe();
+        for (let i = 0; i < pipes.length; i++) {
+          let p = pipes[i];
+          p.x -= 2;
+          if (60 + 34 > p.x && 60 < p.x + 52) {
+            if (birdY < p.top || birdY + 24 > c.height - p.bot) gameOver = true;
+          }
+          if (p.x + 52 < 0) {
+            pipes.splice(i, 1);
+            i--;
+            score++;
+          }
+        }
+      }
+      function loop() {
+        update();
+        draw();
+        requestAnimationFrame(loop);
+      }
+      function jump() {
+        if (gameOver) {
+          birdY = 250;
+          birdV = 0;
+          pipes = [];
+          score = 0;
+          frame = 0;
+          gameOver = false;
+          return;
+        }
+        birdV = flap;
+      }
+      c.addEventListener("click", jump);
+      document.addEventListener("keydown", (e) => e.key === " " && jump());
+      addPipe();
+      loop();
+    </script>
+  </body>
+</html>
