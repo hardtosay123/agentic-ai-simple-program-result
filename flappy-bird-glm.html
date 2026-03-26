@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Flappy Bird</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./styles/flappy-bird-glm.css">
+</head>
+<body>
+    <div class="game-container">
+        <canvas id="gameCanvas" width="400" height="600"></canvas>
+        
+        <!-- Start Overlay -->
+        <div id="startOverlay" class="overlay">
+            <div class="overlay-content">
+                <h1>FLAPPY BIRD</h1>
+                <p class="subtitle">Navigate through the pipes</p>
+                <button id="startBtn" class="game-btn">TAP TO START</button>
+                <p class="hint">Press SPACE or click to flap</p>
+            </div>
+        </div>
+        
+        <!-- Game Over Overlay -->
+        <div id="gameOverOverlay" class="overlay hidden">
+            <div class="overlay-content game-over-content">
+                <h2>GAME OVER</h2>
+                <div class="score-display">
+                    <div class="score-item">
+                        <span class="score-label">SCORE</span>
+                        <span id="finalScore" class="score-value">0</span>
+                    </div>
+                    <div class="score-item">
+                        <span class="score-label">BEST</span>
+                        <span id="highScore" class="score-value">0</span>
+                    </div>
+                </div>
+                <button id="restartBtn" class="game-btn">PLAY AGAIN</button>
+            </div>
+        </div>
+    </div>
+    
+    <script src="./js/flappy-bird-glm.js"></script>
+</body>
+</html>

@@ -1,0 +1,239 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --bg-dark: #1a0a2e;
+  --bg-mid: #2d1b4e;
+  --accent-warm: #ff6b35;
+  --accent-gold: #ffc857;
+  --accent-pink: #ff4d6d;
+  --text-light: #f8f8f8;
+  --text-muted: rgba(255, 255, 255, 0.7);
+  --card-bg: rgba(45, 27, 78, 0.95);
+  --border-color: rgba(255, 107, 53, 0.3);
+}
+
+html,
+body {
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  font-family: "Outfit", sans-serif;
+  background: linear-gradient(
+    135deg,
+    var(--bg-dark) 0%,
+    #16213e 50%,
+    #0f3460 100%
+  );
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 16px;
+}
+
+.game-container {
+  position: relative;
+  width: 400px;
+  max-width: 100%;
+  aspect-ratio: 2 / 3;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow:
+    0 0 0 2px var(--border-color),
+    0 25px 50px -12px rgba(0, 0, 0, 0.5),
+    0 0 80px rgba(255, 107, 53, 0.15);
+}
+
+#gameCanvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: #1a0a2e;
+}
+
+/* Overlay Styles */
+.overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(26, 10, 46, 0.92);
+  backdrop-filter: blur(8px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
+  transition:
+    opacity 0.4s ease,
+    visibility 0.4s ease;
+}
+
+.overlay.hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.overlay-content {
+  text-align: center;
+  padding: 32px;
+  animation: fadeSlideIn 0.5s ease-out;
+}
+
+@keyframes fadeSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+h1 {
+  font-size: 48px;
+  font-weight: 900;
+  letter-spacing: 4px;
+  margin-bottom: 8px;
+  background: linear-gradient(
+    135deg,
+    var(--accent-gold) 0%,
+    var(--accent-warm) 50%,
+    var(--accent-pink) 100%
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-shadow: none;
+}
+
+h2 {
+  font-size: 36px;
+  font-weight: 900;
+  letter-spacing: 3px;
+  color: var(--accent-pink);
+  margin-bottom: 24px;
+}
+
+.subtitle {
+  color: var(--text-muted);
+  font-size: 14px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 32px;
+}
+
+.game-btn {
+  display: inline-block;
+  padding: 16px 48px;
+  font-family: "Outfit", sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--bg-dark);
+  background: linear-gradient(
+    135deg,
+    var(--accent-gold) 0%,
+    var(--accent-warm) 100%
+  );
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(255, 107, 53, 0.4);
+}
+
+.game-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255, 107, 53, 0.5);
+}
+
+.game-btn:active {
+  transform: translateY(0);
+}
+
+.hint {
+  margin-top: 20px;
+  font-size: 12px;
+  color: var(--text-muted);
+  letter-spacing: 1px;
+}
+
+/* Game Over Specific */
+.game-over-content {
+  animation: scaleIn 0.4s ease-out;
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.score-display {
+  display: flex;
+  justify-content: center;
+  gap: 32px;
+  margin-bottom: 32px;
+}
+
+.score-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.score-label {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: var(--text-muted);
+}
+
+.score-value {
+  font-size: 48px;
+  font-weight: 900;
+  color: var(--text-light);
+}
+
+/* Mobile Touch Enhancement */
+@media (max-width: 440px) {
+  .game-container {
+    width: 100%;
+    border-radius: 12px;
+  }
+
+  h1 {
+    font-size: 36px;
+  }
+
+  .game-btn {
+    padding: 14px 36px;
+    font-size: 16px;
+  }
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  .overlay-content,
+  .game-over-content {
+    animation: none;
+  }
+
+  .game-btn {
+    transition: none;
+  }
+}
